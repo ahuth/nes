@@ -19,8 +19,12 @@ export class CPU {
       this.program_counter += 1;
 
       switch (opCode) {
-        case 0xA9: {
-          // LDA
+        case /* BRK */ 0x00:
+          // Force interrupt
+          // http://www.obelisk.me.uk/6502/reference.html#BRK
+          return;
+        case /* LDA */ 0xA9: {
+          // Load accumulator
           // http://www.obelisk.me.uk/6502/reference.html#LDA
           // Loads a byte of memory into the accumulator setting the zero and negative flags as appropriate.
 
@@ -44,10 +48,6 @@ export class CPU {
 
           break;
         }
-        case 0x00:
-          // BRK
-          // http://www.obelisk.me.uk/6502/reference.html#BRK
-          return;
         default:
           throw new Error('todo!');
       }
