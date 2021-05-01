@@ -14,9 +14,13 @@ export enum Instruction {
 }
 
 export class CPU {
+  /** 8-bit accumulator register */
   register_acc: number;
+  /** 8-bit X register */
   register_x: number;
+  /** 8-bit processor status */
   status: number;
+  /** 16-bit program counter */
   program_counter: number;
 
   constructor() {
@@ -26,8 +30,9 @@ export class CPU {
     this.program_counter = 0;
   }
 
-  // Should interpret take single instruction? Let something else manage where it's at in the
-  // program?
+  /**
+   * Run a program made up of instructions and any arguments to them.
+   */
   interpret(program: number[]) {
     this.program_counter = 0;
 
