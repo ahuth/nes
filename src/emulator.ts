@@ -49,7 +49,7 @@ export class CPU {
           // Copy the current contents of the accumulator into the X register and set the zero
           // and negative flags as appropriate.
           this.register_x = this.register_acc;
-          this.updateZeroAndNegativeFlags(this.register_acc);
+          this.updateZeroAndNegativeFlags(this.register_x);
           break;
         }
         default:
