@@ -29,52 +29,38 @@ export class CPU {
           // Load accumulator
           // http://www.obelisk.me.uk/6502/reference.html#LDA
           // Loads a byte of memory into the accumulator setting the zero and negative flags as appropriate.
-
           const param = program[this.program_counter];
           this.program_counter += 1;
           this.register_acc = param;
-
-          // Set zero flag?
-          if (this.register_acc === 0) {
-            this.status = this.status | 0b0000_0010;
-          } else {
-            this.status = this.status & 0b1111_1101;
-          }
-
-          // Set negative flag?
-          if ((this.register_acc & 0b1000_0000) !== 0) {
-            this.status = this.status | 0b1000_0000;
-          } else {
-            this.status = this.status & 0b1111_1111;
-          }
-
+          this.updateZeroAndNegativeFlags(this.register_acc);
           break;
         }
         case /* TAX */ 0xAA: {
           // Transfer accumulator to X
           // http://www.obelisk.me.uk/6502/reference.html#TAX
-
           this.register_x = this.register_acc;
-
-          // Set zero flag?
-          if (this.register_x === 0) {
-            this.status = this.status | 0b0000_0010;
-          } else {
-            this.status = this.status & 0b1111_1101;
-          }
-
-          // Set negative flag?
-          if ((this.register_x & 0b1000_0000) !== 0) {
-            this.status = this.status | 0b1000_0000;
-          } else {
-            this.status = this.status & 0b1111_1111;
-          }
-
+          this.updateZeroAndNegativeFlags(this.register_acc);
           break;
         }
         default:
           throw new Error('todo!');
       }
+    }
+  }
+
+  private updateZeroAndNegativeFlags(result: number): void {
+    // Set zero flag.
+    if (result === 0) {
+      this.status = this.status | 0b0000_0010;
+    } else {
+      this.status = this.status & 0b1111_1101;
+    }
+
+    // Set negative flag.
+    if ((result & 0b1000_0000) !== 0) {
+      this.status = this.status | 0b1000_0000;
+    } else {
+      this.status = this.status & 0b0111_1111;
     }
   }
 }
