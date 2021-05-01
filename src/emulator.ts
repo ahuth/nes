@@ -7,6 +7,8 @@ export enum Instruction {
   BRK = 0x00,
   /** Load accumulator @see http://www.obelisk.me.uk/6502/reference.html#LDA */
   LDA = 0xA9,
+  /** Increment X register @see http://www.obelisk.me.uk/6502/reference.html#INX  */
+  INX = 0xE8,
   /** Transfer accumulator to X @see http://www.obelisk.me.uk/6502/reference.html#TAX */
   TAX = 0xAA,
 }
@@ -43,6 +45,13 @@ export class CPU {
           this.program_counter += 1;
           this.register_acc = param;
           this.updateZeroAndNegativeFlags(this.register_acc);
+          break;
+        }
+        case Instruction.INX: {
+          // Add one to the X register and set the zero and negative flags as appropriate.
+          // Wrap around 255, since we're storing 8-bit numbers.
+          this.register_x = (this.register_x + 1) % 0xFF;
+          this.updateZeroAndNegativeFlags(this.register_x);
           break;
         }
         case Instruction.TAX: {

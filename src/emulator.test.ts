@@ -54,6 +54,40 @@ describe('LDA', () => {
   });
 });
 
+describe('INX', () => {
+  test('incrementing a positive byte', () => {
+    const cpu = new CPU();
+    cpu.interpret([
+      Instruction.LDA, 0x05,
+      Instruction.TAX,
+      Instruction.INX,
+      Instruction.BRK,
+    ]);
+
+    // 0x06 is in the X register.
+    expect(cpu.register_x).toEqual(0x06);
+
+    // Zero flag is not set.
+    expect(cpu.status & 0b0000_0010).toEqual(0b00);
+
+    // Negative flag is not set.
+    expect(cpu.status & 0b1000_0000).toEqual(0);
+  });
+
+  test('overflow', () => {
+    const cpu = new CPU();
+    cpu.interpret([
+      Instruction.LDA, 0xFF,
+      Instruction.TAX,
+      Instruction.INX,
+      Instruction.BRK,
+    ]);
+
+    // 1 is in the X register.
+    expect(cpu.register_x).toEqual(0x01);
+  });
+});
+
 describe('TAX', () => {
   test('transferring a positive byte', () => {
     const cpu = new CPU();
