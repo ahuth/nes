@@ -1,10 +1,12 @@
 export class CPU {
   register_acc: number;
+  register_x: number;
   status: number;
   program_counter: number;
 
   constructor() {
     this.register_acc = 0;
+    this.register_x = 0;
     this.status = 0;
     this.program_counter = 0;
   }
@@ -41,6 +43,28 @@ export class CPU {
 
           // Set negative flag?
           if ((this.register_acc & 0b1000_0000) !== 0) {
+            this.status = this.status | 0b1000_0000;
+          } else {
+            this.status = this.status & 0b1111_1111;
+          }
+
+          break;
+        }
+        case /* TAX */ 0xAA: {
+          // Transfer accumulator to X
+          // http://www.obelisk.me.uk/6502/reference.html#TAX
+
+          this.register_x = this.register_acc;
+
+          // Set zero flag?
+          if (this.register_x === 0) {
+            this.status = this.status | 0b0000_0010;
+          } else {
+            this.status = this.status & 0b1111_1101;
+          }
+
+          // Set negative flag?
+          if ((this.register_x & 0b1000_0000) !== 0) {
             this.status = this.status | 0b1000_0000;
           } else {
             this.status = this.status & 0b1111_1111;
