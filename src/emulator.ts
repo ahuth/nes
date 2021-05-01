@@ -1,3 +1,16 @@
+/**
+ * Assembly instructions for the NES's 2A03 chip (which is a modified version of the 6502).
+ * @see http://www.obelisk.me.uk/6502/reference.html
+ */
+export enum Instruction {
+  /** Force interrupt @see http://www.obelisk.me.uk/6502/reference.html#BRK */
+  BRK = 0x00,
+  /** Load accumulator @see http://www.obelisk.me.uk/6502/reference.html#LDA */
+  LDA = 0xA9,
+  /** Transfer accumulator to X @see http://www.obelisk.me.uk/6502/reference.html#TAX */
+  TAX = 0xAA,
+}
+
 export class CPU {
   register_acc: number;
   register_x: number;
@@ -21,23 +34,20 @@ export class CPU {
       this.program_counter += 1;
 
       switch (opCode) {
-        case /* BRK */ 0x00:
-          // Force interrupt
-          // http://www.obelisk.me.uk/6502/reference.html#BRK
+        case Instruction.BRK:
           return;
-        case /* LDA */ 0xA9: {
-          // Load accumulator
-          // http://www.obelisk.me.uk/6502/reference.html#LDA
-          // Loads a byte of memory into the accumulator setting the zero and negative flags as appropriate.
+        case Instruction.LDA: {
+          // Load a byte of memory into the accumulator and set the zero and negative flags as
+          // appropriate.
           const param = program[this.program_counter];
           this.program_counter += 1;
           this.register_acc = param;
           this.updateZeroAndNegativeFlags(this.register_acc);
           break;
         }
-        case /* TAX */ 0xAA: {
-          // Transfer accumulator to X
-          // http://www.obelisk.me.uk/6502/reference.html#TAX
+        case Instruction.TAX: {
+          // Copy the current contents of the accumulator into the X register and set the zero
+          // and negative flags as appropriate.
           this.register_x = this.register_acc;
           this.updateZeroAndNegativeFlags(this.register_acc);
           break;

@@ -1,13 +1,11 @@
-import {CPU} from './emulator';
+import {CPU, Instruction} from './emulator';
 
 describe('LDA - 0xA9', () => {
   test('loading a positive byte', () => {
     const cpu = new CPU();
     cpu.interpret([
-      // LDA 0x05
-      0xA9, 0x05,
-      // BRK
-      0x00,
+      Instruction.LDA, 0x05,
+      Instruction.BRK,
     ]);
 
     // 0x05 is in the accumulator.
@@ -23,10 +21,8 @@ describe('LDA - 0xA9', () => {
   test('loading zero', () => {
     const cpu = new CPU();
     cpu.interpret([
-      // LDA 0x00
-      0xA9, 0x00,
-      // BRK
-      0x00,
+      Instruction.LDA, 0x00,
+      Instruction.BRK,
     ]);
 
     // 0x00 is in the accumulator.
@@ -42,10 +38,9 @@ describe('LDA - 0xA9', () => {
   test('loading a negative byte', () => {
     const cpu = new CPU();
     cpu.interpret([
-      // LDA 0x88. 0x88 has the 0b1000_0000 bit set, so it is negative.
-      0xA9, 0x88,
-      // BRK
-      0x00,
+      // 0x88 has the 0b1000_0000 bit set, so it is negative.
+      Instruction.LDA, 0x88,
+      Instruction.BRK,
     ]);
 
     // 0x88 is in the accumulator.
@@ -63,12 +58,9 @@ describe('TAX - 0xAA', () => {
   test('transferring a positive byte', () => {
     const cpu = new CPU();
     cpu.interpret([
-      // LDA 0x05
-      0xA9, 0x05,
-      // TAX
-      0xAA,
-      // BRK
-      0x00,
+      Instruction.LDA, 0x05,
+      Instruction.TAX,
+      Instruction.BRK,
     ]);
 
     // 0x05 is in the accumulator.
@@ -87,12 +79,9 @@ describe('TAX - 0xAA', () => {
   test('transferring zero', () => {
     const cpu = new CPU();
     cpu.interpret([
-      // LDA 0x00
-      0xA9, 0x00,
-      // TAX
-      0xAA,
-      // BRK
-      0x00,
+      Instruction.LDA, 0x00,
+      Instruction.TAX,
+      Instruction.TAX,
     ]);
 
     // 0x00 is in the accumulator.
@@ -111,12 +100,10 @@ describe('TAX - 0xAA', () => {
   test('transferring a negative byte', () => {
     const cpu = new CPU();
     cpu.interpret([
-      // LDA 0x88. 0x88 has the 0b1000_0000 bit set, so it is negative.
-      0xA9, 0x88,
-      // TAX
-      0xAA,
-      // BRK
-      0x00,
+      // 0x88 has the 0b1000_0000 bit set, so it is negative.
+      Instruction.LDA, 0x88,
+      Instruction.TAX,
+      Instruction.BRK,
     ]);
 
     // 0x88 is in the accumulator.
