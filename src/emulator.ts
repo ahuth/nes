@@ -38,25 +38,25 @@ export class CPU {
       switch (opCode) {
         case Instruction.BRK:
           return;
+        // Load a byte of memory into the accumulator and set the zero and negative flags as
+        // appropriate.
         case Instruction.LDA: {
-          // Load a byte of memory into the accumulator and set the zero and negative flags as
-          // appropriate.
           const param = program[this.program_counter];
           this.program_counter += 1;
           this.register_acc = param;
           this.updateZeroAndNegativeFlags(this.register_acc);
           break;
         }
+        // Add one to the X register and set the zero and negative flags as appropriate.
         case Instruction.INX: {
-          // Add one to the X register and set the zero and negative flags as appropriate.
-          // Wrap around 255, since we're storing 8-bit numbers.
+          // Increment and wrap around 255, since we're storing 8-bit numbers.
           this.register_x = (this.register_x + 1) % 0xFF;
           this.updateZeroAndNegativeFlags(this.register_x);
           break;
         }
+        // Copy the current contents of the accumulator into the X register and set the zero
+        // and negative flags as appropriate.
         case Instruction.TAX: {
-          // Copy the current contents of the accumulator into the X register and set the zero
-          // and negative flags as appropriate.
           this.register_x = this.register_acc;
           this.updateZeroAndNegativeFlags(this.register_x);
           break;
