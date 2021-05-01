@@ -1,6 +1,6 @@
 import {CPU, Instruction} from './emulator';
 
-describe('LDA - 0xA9', () => {
+describe('LDA', () => {
   test('loading a positive byte', () => {
     const cpu = new CPU();
     cpu.interpret([
@@ -54,7 +54,7 @@ describe('LDA - 0xA9', () => {
   });
 });
 
-describe('TAX - 0xAA', () => {
+describe('TAX', () => {
   test('transferring a positive byte', () => {
     const cpu = new CPU();
     cpu.interpret([
