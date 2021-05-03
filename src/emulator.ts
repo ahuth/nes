@@ -33,7 +33,7 @@ export class CPU {
    *
    * @see https://bugzmanov.github.io/nes_ebook/chapter_3.html
    */
-  memory = new Array(0xFFFF).fill(0);
+  memory = new Uint8Array(0xFFFF);
 
   /**
    * Run a program made up of instructions and any arguments to them.
@@ -47,7 +47,7 @@ export class CPU {
    * Load a program (from a cartridge) into the right place in memory.
    */
   private load(program: number[]) {
-    this.memory.splice(0x8000, program.length, ...program);
+    this.memory.set(program, 0x8000);
     this.program_counter = 0x8000;
   }
 
