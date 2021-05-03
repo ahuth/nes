@@ -15,20 +15,13 @@ export enum Instruction {
 
 export class CPU {
   /** 8-bit accumulator register */
-  register_acc: number;
+  register_acc = 0b0000_0000;
   /** 8-bit X register */
-  register_x: number;
+  register_x = 0b0000_0000;
   /** 8-bit processor status */
-  status: number;
+  status = 0b0000_0000;
   /** 16-bit program counter */
-  program_counter: number;
-
-  constructor() {
-    this.register_acc = 0;
-    this.register_x = 0;
-    this.status = 0;
-    this.program_counter = 0;
-  }
+  program_counter = 0b0000_0000_0000_0000;
 
   /**
    * Run a program made up of instructions and any arguments to them.
