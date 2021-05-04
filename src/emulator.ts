@@ -32,6 +32,9 @@ export class CPU {
    * - 0x8000 to 0x10000 is mapped to program ROM on the cartridge.
    *
    * @see https://bugzmanov.github.io/nes_ebook/chapter_3.html
+   *
+   * It takes 2 bytes to address this memory. I'm not sure if endianness affects anything here. The
+   * NES uses little-endian addressing.
    */
   memory = new Uint8Array(0xFFFF);
 
