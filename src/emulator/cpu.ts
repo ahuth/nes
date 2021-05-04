@@ -139,7 +139,7 @@ export class CPU {
         // Add one to the X register and set the zero and negative flags as appropriate.
         case Instruction.INX: {
           // Increment and wrap around 255, since we're storing 8-bit numbers.
-          this.register_x = (this.register_x + 1) % 0xFF;
+          this.register_x = wrapAroundUint8(this.register_x + 1);
           this.updateZeroAndNegativeFlags(this.register_x);
           break;
         }
@@ -216,45 +216,36 @@ export class CPU {
       case AddressingMode.ZeroPage_X: {
         const specifiedAddress = this.memoryRead(this.program_counter);
         const offset = this.register_x;
-        // Wrap at 0xFFFF to ensure this is a 16 bit (2 byte) value.
-        return (specifiedAddress + offset) % 0xFFFF;
+        return wrapAroundUint16(specifiedAddress + offset);
       }
       case AddressingMode.ZeroPage_Y: {
         const specifiedAddress = this.memoryRead(this.program_counter);
         const offset = this.register_y;
-        // Wrap at 0xFFFF to ensure this is a 16 bit (2 byte) value.
-        return (specifiedAddress + offset) % 0xFFFF;
+        return wrapAroundUint16(specifiedAddress + offset);
       }
       case AddressingMode.Absolute_X: {
         const specifiedAddress = this.memoryReadUint16(this.program_counter);
         const offset = this.register_x;
-        // Wrap at 0xFFFF to ensure this is a 16 bit (2 byte) value.
-        return (specifiedAddress + offset) % 0xFFFF;
+        return wrapAroundUint16(specifiedAddress + offset);
       }
       case AddressingMode.Absolute_Y: {
         const specifiedAddress = this.memoryReadUint16(this.program_counter);
         const offset = this.register_y;
-        // Wrap at 0xFFFF to ensure this is a 16 bit (2 byte) value.
-        return (specifiedAddress + offset) % 0xFFFF;
+        return wrapAroundUint16(specifiedAddress + offset);
       }
       case AddressingMode.Indirect_X: {
         const base = this.memoryRead(this.program_counter);
-        // Wrap at 0xFF so that this wraps around the zero page.
-        const ptr = (base + this.register_x) % 0xFF;
+        const ptr = wrapAroundUint8(base + this.register_x);
         const lo = this.memoryRead(ptr);
-        // Wrap at 0xFFFF to ensure the address is a 16 bit (2 byte) value.
-        const hi = this.memoryRead((ptr + 1) % 0xFFFF);
+        const hi = this.memoryRead(wrapAroundUint16(ptr + 1));
         return (hi << 8) | lo;
       }
       case AddressingMode.Indirect_Y: {
         const base = this.memoryRead(this.program_counter);
         const lo = this.memoryRead(base);
-        // Wrap at 0xFFFF to ensure the address is a 16 bit (2 byte) value.
-        const hi = this.memoryRead((base + 1) % 0xFFFF);
+        const hi = this.memoryRead(wrapAroundUint16(base + 1));
         const deref_base = (hi << 8) | lo;
-        // Wrap at 0xFFFF to ensure this is a 16 bit (2 byte) value.
-        const deref = (deref_base + this.register_y) % 0xFFFF;
-        return deref;
+        return wrapAroundUint16(deref_base + this.register_y);
       }
       default:
         throw new Error(`Mode ${mode} not supported!`);
@@ -276,4 +267,18 @@ export class CPU {
       this.status = this.status & 0b0111_1111;
     }
   }
+}
+
+/**
+ * Clamp a number to 8 bits (1 byte).
+ */
+function wrapAroundUint8(num: number): number {
+  return num % 0xFF;
+}
+
+/**
+ * Clamp a number to 16 bits (2 bytes).
+ */
+function wrapAroundUint16(num: number): number {
+  return num % 0xFFFF;
 }
