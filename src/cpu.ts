@@ -109,7 +109,7 @@ export class CPU {
    * @param address 16-bit memory address
    * @param data 8-bit data
    */
-  private memorySet(address: number, data: number): void {
+  private memoryWrite(address: number, data: number): void {
     this.memory[address] = data;
   }
 
