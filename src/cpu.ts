@@ -40,15 +40,28 @@ export class CPU {
    */
   interpret(program: number[]) {
     this.load(program);
+    this.reset();
     this.run();
   }
 
   /**
-   * Load a program (from a cartridge) into the right place in memory.
+   * Load a program (from a cartridge) into 0x8000-0x10000 in memory, and set the start location of
+   * the program to 0xFFFC.
    */
   private load(program: number[]) {
     this.memory.set(program, 0x8000);
-    this.program_counter = 0x8000;
+    this.memoryWriteUint16(0xFFFC, 0x8000);
+  }
+
+  /**
+   * Reset the CPU state and set the program counter to the address at 0xFFFC. This happens when a
+   * cartridge is loaded.
+   */
+  private reset() {
+    this.register_acc = 0;
+    this.register_x = 0;
+    this.status = 0;
+    this.program_counter = this.memoryReadUint16(0xFFFC);
   }
 
   /**
