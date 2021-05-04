@@ -1,4 +1,4 @@
-import {CPU, Instruction} from './emulator';
+import {CPU, Instruction} from './cpu';
 
 describe('LDA', () => {
   test('loading a positive byte', () => {

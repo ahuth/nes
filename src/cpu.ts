@@ -34,7 +34,8 @@ export class CPU {
    * @see https://bugzmanov.github.io/nes_ebook/chapter_3.html
    *
    * It takes 2 bytes to address this memory. I'm not sure if endianness affects anything here. The
-   * NES uses little-endian addressing.
+   * NES uses little-endian addressing. My understanding is that most modern systems also use little-
+   * endian addressing. But would there be problems if this ran on a system using big-endian?
    */
   memory = new Uint8Array(0xFFFF);
 
