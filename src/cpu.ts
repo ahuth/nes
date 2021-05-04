@@ -32,10 +32,6 @@ export class CPU {
    * - 0x8000 to 0x10000 is mapped to program ROM on the cartridge.
    *
    * @see https://bugzmanov.github.io/nes_ebook/chapter_3.html
-   *
-   * It takes 2 bytes to address this memory. I'm not sure if endianness affects anything here. The
-   * NES uses little-endian addressing. My understanding is that most modern systems also use little-
-   * endian addressing. But would there be problems if this ran on a system using big-endian?
    */
   memory = new Uint8Array(0xFFFF);
 
@@ -105,12 +101,39 @@ export class CPU {
   }
 
   /**
+   * Get 2 bytes from memory.
+   * @param address 16-bit memory address
+   * @returns 16-bit data
+   */
+  private memoryReadUint16(address: number): number {
+    // The NES uses little-endian memory addressing, so the least significant digit is first, and
+    // the most significant digit is last. Read them and put them back together in the correct order.
+    const lo = this.memoryRead(address);
+    const hi = this.memoryRead(address + 1);
+    return (hi << 8) | lo;
+  }
+
+  /**
    * Set data in memory.
    * @param address 16-bit memory address
    * @param data 8-bit data
    */
   private memoryWrite(address: number, data: number): void {
     this.memory[address] = data;
+  }
+
+  /**
+   * Set 2 bytes in memory.
+   * @param address 16-bit memory address
+   * @param data 16-bit data
+   */
+  private memoryWriteUint16(address: number, data: number): void {
+    // The NES uses little-endian memory addressing, so split apart the most and least significant
+    // digits. Then we'll store them in reverse order.
+    const hi = data >> 8;
+    const lo = data & 0xFF;
+    this.memoryWrite(address, lo);
+    this.memoryWrite(address + 1, hi);
   }
 
   private updateZeroAndNegativeFlags(result: number): void {
