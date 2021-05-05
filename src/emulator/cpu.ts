@@ -55,7 +55,7 @@ export enum Instruction {
   /** Force interrupt @see http://www.obelisk.me.uk/6502/reference.html#BRK */
   BRK = 0x00,
   /** Load accumulator @see http://www.obelisk.me.uk/6502/reference.html#LDA */
-  LDA = 0xA9,
+  LDA_Immediate = 0xA9,
   /** Increment X register @see http://www.obelisk.me.uk/6502/reference.html#INX  */
   INX = 0xE8,
   /** Transfer accumulator to X @see http://www.obelisk.me.uk/6502/reference.html#TAX */
@@ -129,11 +129,9 @@ export class CPU {
           return;
         // Load a byte of memory into the accumulator and set the zero and negative flags as
         // appropriate.
-        case Instruction.LDA: {
-          const param = this.memoryRead(this.program_counter);
+        case Instruction.LDA_Immediate: {
+          this.lda(AddressingMode.Immediate);
           this.program_counter += 1;
-          this.register_acc = param;
-          this.updateZeroAndNegativeFlags(this.register_acc);
           break;
         }
         // Add one to the X register and set the zero and negative flags as appropriate.
@@ -266,6 +264,16 @@ export class CPU {
     } else {
       this.status = this.status & 0b0111_1111;
     }
+  }
+
+  /**
+   * Execute the LDA instruction. The address of its parameter depends on addressing mode.
+   */
+  private lda(addressingMode: AddressingMode) {
+    const address = this.getOperandAddress(addressingMode);
+    const param = this.memoryRead(address);
+    this.register_acc = param;
+    this.updateZeroAndNegativeFlags(this.register_acc);
   }
 }
 

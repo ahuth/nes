@@ -1,41 +1,43 @@
 import {CPU, Instruction} from './cpu';
 
 describe('LDA', () => {
-  test('loading a positive byte', () => {
-    const cpu = new CPU();
-    cpu.interpret([
-      Instruction.LDA, 0x05,
-      Instruction.BRK,
-    ]);
+  describe('immediate addressing', () => {
+    test('loading a positive byte', () => {
+      const cpu = new CPU();
+      cpu.interpret([
+        Instruction.LDA_Immediate, 0x05,
+        Instruction.BRK,
+      ]);
 
-    expect(cpu).toHaveRegisterValueInAcc(0x05);
-    expect(cpu).not.toHaveFlagZero();
-    expect(cpu).not.toHaveFlagNegative();
-  });
+      expect(cpu).toHaveRegisterValueInAcc(0x05);
+      expect(cpu).not.toHaveFlagZero();
+      expect(cpu).not.toHaveFlagNegative();
+    });
 
-  test('loading zero', () => {
-    const cpu = new CPU();
-    cpu.interpret([
-      Instruction.LDA, 0x00,
-      Instruction.BRK,
-    ]);
+    test('loading zero', () => {
+      const cpu = new CPU();
+      cpu.interpret([
+        Instruction.LDA_Immediate, 0x00,
+        Instruction.BRK,
+      ]);
 
-    expect(cpu).toHaveRegisterValueInAcc(0x00);
-    expect(cpu).toHaveFlagZero();
-    expect(cpu).not.toHaveFlagNegative();
-  });
+      expect(cpu).toHaveRegisterValueInAcc(0x00);
+      expect(cpu).toHaveFlagZero();
+      expect(cpu).not.toHaveFlagNegative();
+    });
 
-  test('loading a negative byte', () => {
-    const cpu = new CPU();
-    cpu.interpret([
-      // 0x88 has the 0b1000_0000 bit set, so it is negative.
-      Instruction.LDA, 0x88,
-      Instruction.BRK,
-    ]);
+    test('loading a negative byte', () => {
+      const cpu = new CPU();
+      cpu.interpret([
+        // 0x88 has the 0b1000_0000 bit set, so it is negative.
+        Instruction.LDA_Immediate, 0x88,
+        Instruction.BRK,
+      ]);
 
-    expect(cpu).toHaveRegisterValueInAcc(0x88);
-    expect(cpu).not.toHaveFlagZero();
-    expect(cpu).toHaveFlagNegative();
+      expect(cpu).toHaveRegisterValueInAcc(0x88);
+      expect(cpu).not.toHaveFlagZero();
+      expect(cpu).toHaveFlagNegative();
+    });
   });
 });
 
@@ -43,7 +45,7 @@ describe('INX', () => {
   test('incrementing a positive byte', () => {
     const cpu = new CPU();
     cpu.interpret([
-      Instruction.LDA, 0x05,
+      Instruction.LDA_Immediate, 0x05,
       Instruction.TAX,
       Instruction.INX,
       Instruction.BRK,
@@ -57,7 +59,7 @@ describe('INX', () => {
   test('overflow', () => {
     const cpu = new CPU();
     cpu.interpret([
-      Instruction.LDA, 0xFF,
+      Instruction.LDA_Immediate, 0xFF,
       Instruction.TAX,
       Instruction.INX,
       Instruction.BRK,
@@ -71,7 +73,7 @@ describe('TAX', () => {
   test('transferring a positive byte', () => {
     const cpu = new CPU();
     cpu.interpret([
-      Instruction.LDA, 0x05,
+      Instruction.LDA_Immediate, 0x05,
       Instruction.TAX,
       Instruction.BRK,
     ]);
@@ -85,7 +87,7 @@ describe('TAX', () => {
   test('transferring zero', () => {
     const cpu = new CPU();
     cpu.interpret([
-      Instruction.LDA, 0x00,
+      Instruction.LDA_Immediate, 0x00,
       Instruction.TAX,
       Instruction.TAX,
     ]);
@@ -100,7 +102,7 @@ describe('TAX', () => {
     const cpu = new CPU();
     cpu.interpret([
       // 0x88 has the 0b1000_0000 bit set, so it is negative.
-      Instruction.LDA, 0x88,
+      Instruction.LDA_Immediate, 0x88,
       Instruction.TAX,
       Instruction.BRK,
     ]);
