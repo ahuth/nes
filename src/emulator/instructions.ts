@@ -1,8 +1,12 @@
+import mapKeys from 'lodash/mapKeys';
+
 /**
  * Addressing mode which determines how the CPU interprets an instruction and their parameters.
  * @see http://www.obelisk.me.uk/6502/addressing.html
  */
 export enum AddressingMode {
+  /** No operands */
+  Implied,
   /** Parameters are values, not memory addresses. */
   Immediate,
   /** Parameters are a 8 bits (1 byte), so only the first 256 bytes can be used. */
@@ -47,17 +51,39 @@ export enum AddressingMode {
   Indirect_Y,
 }
 
-/**
- * Assembly instructions for the NES's 2A03 chip (which is a modified version of the 6502).
- * @see http://www.obelisk.me.uk/6502/reference.html
- */
-export enum Instruction {
-  /** Force interrupt @see http://www.obelisk.me.uk/6502/reference.html#BRK */
-  BRK = 0x00,
-  /** Load accumulator @see http://www.obelisk.me.uk/6502/reference.html#LDA */
-  LDA_Immediate = 0xA9,
-  /** Increment X register @see http://www.obelisk.me.uk/6502/reference.html#INX  */
-  INX = 0xE8,
-  /** Transfer accumulator to X @see http://www.obelisk.me.uk/6502/reference.html#TAX */
-  TAX = 0xAA,
-}
+export const InstructionsByName = {
+  /** Force interrupt */
+  BRK: {
+    name: 'BRK',
+    opcode: 0x00,
+    addressingMode: AddressingMode.Implied,
+    cycles: 7,
+    length: 1,
+  },
+  /** Increment X register */
+  INX: {
+    name: 'INX',
+    opcode: 0xE8,
+    addressingMode: AddressingMode.Implied,
+    cycles: 2,
+    length: 1,
+  },
+  /** Load accumulator */
+  LDA_Immediate: {
+    name: 'LDA_Immediate',
+    opcode: 0xA9,
+    addressingMode: AddressingMode.Immediate,
+    cycles: 2,
+    length: 2,
+  },
+  /** Transfer accumulator to X */
+  TAX: {
+    name: 'TAX',
+    opcode: 0xAA,
+    addressingMode: AddressingMode.Implied,
+    cycles: 2,
+    length: 1,
+  },
+};
+
+export const InstructionsByOpcode = mapKeys(InstructionsByName, 'opcode');

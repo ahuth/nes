@@ -1,13 +1,13 @@
 import {CPU} from './cpu';
-import {Instruction} from './instructions';
+import {InstructionsByName} from './instructions';
 
 describe('LDA', () => {
   describe('immediate addressing', () => {
     test('loading a positive byte', () => {
       const cpu = new CPU();
       cpu.load([
-        Instruction.LDA_Immediate, 0x05,
-        Instruction.BRK,
+        InstructionsByName.LDA_Immediate.opcode, 0x05,
+        InstructionsByName.BRK.opcode,
       ]);
 
       cpu.run();
@@ -19,8 +19,8 @@ describe('LDA', () => {
     test('loading zero', () => {
       const cpu = new CPU();
       cpu.load([
-        Instruction.LDA_Immediate, 0x00,
-        Instruction.BRK,
+        InstructionsByName.LDA_Immediate.opcode, 0x00,
+        InstructionsByName.BRK.opcode,
       ]);
 
       cpu.run();
@@ -33,8 +33,8 @@ describe('LDA', () => {
       const cpu = new CPU();
       cpu.load([
         // 0x88 has the 0b1000_0000 bit set, so it is negative.
-        Instruction.LDA_Immediate, 0x88,
-        Instruction.BRK,
+        InstructionsByName.LDA_Immediate.opcode, 0x88,
+        InstructionsByName.BRK.opcode,
       ]);
 
       cpu.run();
@@ -49,10 +49,10 @@ describe('INX', () => {
   test('incrementing a positive byte', () => {
     const cpu = new CPU();
     cpu.load([
-      Instruction.LDA_Immediate, 0x05,
-      Instruction.TAX,
-      Instruction.INX,
-      Instruction.BRK,
+      InstructionsByName.LDA_Immediate.opcode, 0x05,
+      InstructionsByName.TAX.opcode,
+      InstructionsByName.INX.opcode,
+      InstructionsByName.BRK.opcode,
     ]);
 
     cpu.run();
@@ -64,10 +64,10 @@ describe('INX', () => {
   test('overflow', () => {
     const cpu = new CPU();
     cpu.load([
-      Instruction.LDA_Immediate, 0xFF,
-      Instruction.TAX,
-      Instruction.INX,
-      Instruction.BRK,
+      InstructionsByName.LDA_Immediate.opcode, 0xFF,
+      InstructionsByName.TAX.opcode,
+      InstructionsByName.INX.opcode,
+      InstructionsByName.BRK.opcode,
     ]);
 
     cpu.run();
@@ -79,9 +79,9 @@ describe('TAX', () => {
   test('transferring a positive byte', () => {
     const cpu = new CPU();
     cpu.load([
-      Instruction.LDA_Immediate, 0x05,
-      Instruction.TAX,
-      Instruction.BRK,
+      InstructionsByName.LDA_Immediate.opcode, 0x05,
+      InstructionsByName.TAX.opcode,
+      InstructionsByName.BRK.opcode,
     ]);
 
     cpu.run();
@@ -94,9 +94,9 @@ describe('TAX', () => {
   test('transferring zero', () => {
     const cpu = new CPU();
     cpu.load([
-      Instruction.LDA_Immediate, 0x00,
-      Instruction.TAX,
-      Instruction.TAX,
+      InstructionsByName.LDA_Immediate.opcode, 0x00,
+      InstructionsByName.TAX.opcode,
+      InstructionsByName.TAX.opcode,
     ]);
 
     cpu.run();
@@ -110,9 +110,9 @@ describe('TAX', () => {
     const cpu = new CPU();
     cpu.load([
       // 0x88 has the 0b1000_0000 bit set, so it is negative.
-      Instruction.LDA_Immediate, 0x88,
-      Instruction.TAX,
-      Instruction.BRK,
+      InstructionsByName.LDA_Immediate.opcode, 0x88,
+      InstructionsByName.TAX.opcode,
+      InstructionsByName.BRK.opcode,
     ]);
 
     cpu.run();

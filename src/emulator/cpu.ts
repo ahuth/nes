@@ -1,4 +1,4 @@
-import {AddressingMode, Instruction} from './instructions';
+import {AddressingMode, InstructionsByName, InstructionsByOpcode} from './instructions';
 
 export class CPU {
   /** 8-bit accumulator register */
@@ -40,27 +40,28 @@ export class CPU {
   run() {
     while (true) {
       const opCode = this.memoryRead(this.program_counter);
+      const instruction = InstructionsByOpcode[opCode];
       this.program_counter += 1;
 
       switch (opCode) {
-        case Instruction.BRK:
+        case InstructionsByName.BRK.opcode:
           return;
         // Load a byte of memory into the accumulator and set the zero and negative flags as
         // appropriate.
-        case Instruction.LDA_Immediate: {
-          this.lda(AddressingMode.Immediate);
+        case InstructionsByName.LDA_Immediate.opcode: {
+          this.lda(instruction.addressingMode);
           this.program_counter += 1;
           break;
         }
         // Add one to the X register and set the zero and negative flags as appropriate.
-        case Instruction.INX: {
+        case InstructionsByName.INX.opcode: {
           // Increment. Wrap around 255, since we're storing 8-bit numbers.
           this.registerSet('register_x', wrapAroundUint8(this.register_x + 1));
           break;
         }
         // Copy the current contents of the accumulator into the X register and set the zero
         // and negative flags as appropriate.
-        case Instruction.TAX: {
+        case InstructionsByName.TAX.opcode: {
           this.registerSet('register_x', this.register_acc);
           break;
         }
