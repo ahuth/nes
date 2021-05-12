@@ -133,7 +133,7 @@ export class CPU {
    */
   private registerSet(register: 'register_acc' | 'register_x' | 'register_y', value: number): void {
     this[register] = value;
-    this.updateZeroAndNegativeFlags(value);
+    this.updateFlags(value);
   }
 
   /**
@@ -187,7 +187,7 @@ export class CPU {
     }
   }
 
-  private updateZeroAndNegativeFlags(result: number): void {
+  private updateFlags(result: number): void {
     // Set zero flag.
     if (result === 0) {
       this.status = this.status | 0b0000_0010;
