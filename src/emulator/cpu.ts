@@ -25,39 +25,19 @@ export class CPU {
   memory = new Uint8Array(0xFFFF);
 
   /**
-   * Run a program made up of instructions and any arguments to them.
-   */
-  interpret(program: number[]) {
-    this.load(program);
-    this.reset();
-    this.run();
-  }
-
-  /**
    * Load a program (from a cartridge) into 0x8000-0x10000 in memory, and set the start location of
    * the program to 0xFFFC.
    */
-  private load(program: number[]) {
+  load(program: number[]) {
     this.memory.set(program, 0x8000);
     this.memoryWriteUint16(0xFFFC, 0x8000);
-  }
-
-  /**
-   * Reset the CPU state and set the program counter to the address at 0xFFFC. This happens when a
-   * cartridge is loaded.
-   */
-  private reset() {
-    this.register_acc = 0;
-    this.register_x = 0;
-    this.register_y = 0;
-    this.status = 0;
-    this.program_counter = this.memoryReadUint16(0xFFFC);
+    this.reset();
   }
 
   /**
    * Run a program made up of instructions and any arguments to them.
    */
-  private run() {
+  run() {
     while (true) {
       const opCode = this.memoryRead(this.program_counter);
       this.program_counter += 1;
@@ -90,6 +70,18 @@ export class CPU {
           throw new Error('todo!');
       }
     }
+  }
+
+  /**
+   * Reset the CPU state and set the program counter to the address at 0xFFFC. This happens when a
+   * cartridge is loaded.
+   */
+  private reset() {
+    this.register_acc = 0;
+    this.register_x = 0;
+    this.register_y = 0;
+    this.status = 0;
+    this.program_counter = this.memoryReadUint16(0xFFFC);
   }
 
   /**
