@@ -54,16 +54,14 @@ export class CPU {
         }
         // Add one to the X register and set the zero and negative flags as appropriate.
         case Instruction.INX: {
-          // Increment and wrap around 255, since we're storing 8-bit numbers.
-          this.register_x = wrapAroundUint8(this.register_x + 1);
-          this.updateZeroAndNegativeFlags(this.register_x);
+          // Increment. Wrap around 255, since we're storing 8-bit numbers.
+          this.registerSet('register_x', wrapAroundUint8(this.register_x + 1));
           break;
         }
         // Copy the current contents of the accumulator into the X register and set the zero
         // and negative flags as appropriate.
         case Instruction.TAX: {
-          this.register_x = this.register_acc;
-          this.updateZeroAndNegativeFlags(this.register_x);
+          this.registerSet('register_x', this.register_acc);
           break;
         }
         default:
@@ -127,6 +125,15 @@ export class CPU {
     const lo = data & 0xFF;
     this.memoryWrite(address, lo);
     this.memoryWrite(address + 1, hi);
+  }
+
+  /**
+   * Set a register value. Use this instead of directly assigning so that status flags get set
+   * automatically.
+   */
+  private registerSet(register: 'register_acc' | 'register_x' | 'register_y', value: number): void {
+    this[register] = value;
+    this.updateZeroAndNegativeFlags(value);
   }
 
   /**
@@ -202,8 +209,7 @@ export class CPU {
   private lda(addressingMode: AddressingMode) {
     const address = this.getOperandAddress(addressingMode);
     const param = this.memoryRead(address);
-    this.register_acc = param;
-    this.updateZeroAndNegativeFlags(this.register_acc);
+    this.registerSet('register_acc', param);
   }
 }
 
