@@ -1,4 +1,5 @@
-import {CPU, Instruction} from './cpu';
+import {CPU} from './cpu';
+import {Instruction} from './instructions';
 
 describe('LDA', () => {
   describe('immediate addressing', () => {
