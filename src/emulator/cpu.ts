@@ -192,14 +192,14 @@ export class CPU {
     if (result === 0) {
       this.status = this.status | 0b0000_0010;
     } else {
-      this.status = this.status & 0b1111_1101;
+      this.status = this.status & ~0b0000_0010;
     }
 
     // Set negative flag.
     if ((result & 0b1000_0000) !== 0) {
       this.status = this.status | 0b1000_0000;
     } else {
-      this.status = this.status & 0b0111_1111;
+      this.status = this.status & ~0b1000_0000;
     }
   }
 
